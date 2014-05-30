@@ -15,7 +15,7 @@
     <script src="leaflet.js"></script>
 
     <script>
-        var map = L.map('map', { zoomControl:false }).setView([41.7398033,2.3785299], 8.5);  
+        var map = L.map('map', { zoomControl:false }).setView([41.7398033,2.3785299], 8);  
         
         map.dragging.disable();
         map.touchZoom.disable();
@@ -49,8 +49,8 @@
         }  
 
         L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
-            minZoom: 8.5,
-            maxZoom: 8.5,
+            minZoom: 8,
+            maxZoom: 8,
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
                 '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
                 'Imagery © <a href="http://mapbox.com">Mapbox</a>',
