@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pluviometria 2013</title>
+    <title>Leaflet GeoJSON Example</title>
     <meta charset="utf-8" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +16,14 @@
     <script src="leaflet.js"></script>
 
     <script>
-        var map = L.map('map').setView([41.7398033,2.3785299], 8);  
+        var map = L.map('map', { zoomControl:false }).setView([41.7398033,2.3785299], 8.5);  
+        
+        map.dragging.disable();
+        map.touchZoom.disable();
+        map.doubleClickZoom.disable();
+        map.scrollWheelZoom.disable();
+        map.boxZoom.disable();
+        map.keyboard.disable();
 
         function getColor(d)
         {
@@ -40,21 +47,11 @@
                 dashArray: '3',
                 fillOpacity: 0.7,                
             };
-        }                
-
-        function style2(feature) {
-            return {
-                weight: 2,
-                opacity: 1,
-                color: '#666',
-                dashArray: '3',
-                fillOpacity: 0.7,
-                fillColor: '#FEFEFE'
-            };
-        }        
+        }  
 
         L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
-            maxZoom: 18,
+            minZoom: 8.5,
+            maxZoom: 8.5,
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
                 '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
                 'Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -110,7 +107,7 @@
 
                 layer.on('mouseover', function (e) {
                     this.setStyle({
-                    weight: 1,
+                    weight: 2,
                     color: 'red',
                     dashArray: '',
                     fillOpacity: 0.7
@@ -127,18 +124,7 @@
                     info.update();
                 });                
             }            
-        }).addTo(map);
-
-        /*var legend = L.control({position: 'bottomright'});
-
-        legend.onAdd = function (map) {
-        var div = L.DomUtil.create('div', 'info legend');
-            div.innerHTML +=
-            '<h3>Legend</h3>';
-        return div;
-        };
-
-        legend.addTo(map);*/
+        }).addTo(map);    
 
         var legend = L.control({position: 'bottomright'});
 
@@ -160,7 +146,7 @@
             return div;
         };
 
-        legend.addTo(map);
+        legend.addTo(map);        
     </script>
 </body>
 </html>
