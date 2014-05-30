@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaflet GeoJSON Example</title>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+    <link rel="stylesheet" href="leaflet.css" />
+</head>
+<body>
+    <div id="map"></div>
+
+    <!--<script src="sample-geojson.js" type="text/javascript"></script>-->
+    <script src="pluja.js" type="text/javascript"></script>
+    <script src="leaflet.js"></script>
+
+    <script>
+        var map = L.map('map').setView([41.7398033,2.3785299], 8);  
+
+        function getColor(d)
+        {
+            return  d > 1000 ? '#4575b4' :
+                    d > 900  ? '#74add1' :
+                    d > 800  ? '#abd9e9' :
+                    d > 700  ? '#e0f3f8' :
+                    d > 600  ? '#ffffbf' :
+                    d > 500  ? '#fee090' :
+                    d > 400  ? '#fdae61' :
+                    d > 300  ? '#f46d43' :
+                    d > 200  ? '#d73027' :                    
+                               '#FFEDA0';
+        }      
+
+        function style(feature) {
+            return {
+                weight: 2,
+                opacity: 1,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 0.7,                
+            };
+        }                
+
+        function style2(feature) {
+            return {
+                weight: 2,
+                opacity: 1,
+                color: '#666',
+                dashArray: '3',
+                fillOpacity: 0.7,
+                fillColor: '#FEFEFE'
+            };
+        }        
+
+        L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+                '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            id: 'examples.map-20v6611k'
+        }).addTo(map);        
+
+        // control that shows state info on hover
+        var info = L.control();
+
+        info.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info');
+            this.update();
+            return this._div;
+        };
+
+        info.update = function (feature) {
+            this._div.innerHTML = '<h4>Pluja total 2013</h4>' +  (feature ?
+                '<b>' + feature.properties.nom_comarca + '</b><br />' + feature.properties.total + " l/m2"
+                : "Posa't a sobre una comarca");
+        };
+
+        info.addTo(map);
+
+        var comarca = new L.geoJson(cat, {
+            style: style,
+            onEachFeature: function(feature, layer){                
+                layer.bindPopup(feature.properties.nom_comarca + ": " + feature.properties.total + "l/m2");
+
+                if (feature.properties.total > 0 && feature.properties.total <= 300)
+                {
+                    layer.setStyle({
+                        fillColor: getColor(feature.properties.total)
+                    });
+                }
+                else if (feature.properties.total > 300 && feature.properties.total <= 600)
+                {
+                    layer.setStyle({
+                        fillColor: getColor(feature.properties.total)
+                    });
+                }
+                else if (feature.properties.total > 600 && feature.properties.total <= 900)
+                {
+                    layer.setStyle({
+                        fillColor: getColor(feature.properties.total)
+                    });
+                }
+                else
+                {
+                    layer.setStyle({
+                        fillColor: getColor(feature.properties.total)
+                    });
+                }
+
+                layer.on('mouseover', function (e) {
+                    this.setStyle({
+                    weight: 5,
+                    color: 'red',
+                    dashArray: '',
+                    fillOpacity: 0.7
+                    });
+
+                    if (!L.Browser.ie && !L.Browser.opera) {
+                        layer.bringToFront();
+                        info.update(feature);
+                    }
+                });
+
+                layer.on('mouseout', function (e) {
+                    comarca.resetStyle(e.target);
+                    info.update();
+                });                
+            }            
+        }).addTo(map);
+
+        /*var legend = L.control({position: 'bottomright'});
+
+        legend.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'info legend');
+            div.innerHTML +=
+            '<h3>Legend</h3>';
+        return div;
+        };
+
+        legend.addTo(map);*/
+
+        var legend = L.control({position: 'bottomright'});
+
+        legend.onAdd = function (map) {
+
+            var div = L.DomUtil.create('div', 'legend'),
+                grades = [0, 300, 400, 500, 600, 700, 800, 900, 1000],
+                labels = ['<span class="label">l/m2</span>'],
+                from, to;
+
+            for (var i = 0; i < grades.length; i++) {
+                from = grades[i];
+                to = grades[i + 1];
+
+                labels.push('<i style="background:' + getColor(from + 1) + '"></i> ' + from + (to ? '&ndash;' + to : '+'));
+            }
+
+            div.innerHTML = labels.join('<br>');
+            return div;
+        };
+
+        legend.addTo(map);
+    </script>
+</body>
+</html>
